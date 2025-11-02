@@ -1,0 +1,184 @@
+{
+  "heroImage": {
+    "imageName": "hero-banner-image"
+  },
+  "items": [
+    {
+      "id": "1",
+      "imageURL": "https://raw.githubusercontent.com/JiangAogo/nailart/main/nailart1.jpg"
+    },
+    {
+      "id": "2",
+      "imageURL": "https://raw.githubusercontent.com/JiangAogo/nailart/main/nailart2.jpg"
+    },
+    {
+      "id": "3",
+      "imageURL": "https://raw.githubusercontent.com/JiangAogo/nailart/main/nailart3.jpg"
+    },
+    {
+      "id": "4",
+      "imageURL": "https://raw.githubusercontent.com/JiangAogo/nailart/main/nailart4.jpg"
+    },
+    {
+      "id": "5",
+      "imageURL": "https://raw.githubusercontent.com/JiangAogo/nailart/main/nailart5.jpg"
+    },
+    {
+      "id": "6",
+      "imageURL": "https://raw.githubusercontent.com/JiangAogo/nailart/main/nailart6.jpg"
+    },
+    {
+      "id": "7",
+      "imageURL": "https://raw.githubusercontent.com/JiangAogo/nailart/main/nailart7.jpg"
+    },
+    {
+      "id": "8",
+      "imageURL": "https://raw.githubusercontent.com/JiangAogo/nailart/main/nailart8.jpg"
+    },
+    {
+      "id": "9",
+      "imageURL": "https://raw.githubusercontent.com/JiangAogo/nailart/main/nailart9.jpg"
+    },
+    {
+      "id": "10",
+      "imageURL": "https://raw.githubusercontent.com/JiangAogo/nailart/main/nailart10.jpg"
+    },
+    {
+      "id": "11",
+      "imageURL": "https://raw.githubusercontent.com/JiangAogo/nailart/main/nailart11.jpg"
+    },
+    {
+      "id": "12",
+      "imageURL": "https://raw.githubusercontent.com/JiangAogo/nailart/main/nailart12.jpg"
+    },
+    {
+      "id": "13",
+      "imageURL": "https://raw.githubusercontent.com/JiangAogo/nailart/main/nailart13.jpg"
+    },
+    {
+      "id": "14",
+      "imageURL": "https://raw.githubusercontent.com/JiangAogo/nailart/main/nailart14.jpg"
+    },
+    {
+      "id": "15",
+      "imageURL": "https://raw.githubusercontent.com/JiangAogo/nailart/main/nailart15.jpg"
+    },
+    {
+      "id": "16",
+      "imageURL": "https://raw.githubusercontent.com/JiangAogo/nailart/main/nailart16.jpg"
+    },
+    {
+      "id": "17",
+      "imageURL": "https://raw.githubusercontent.com/JiangAogo/nailart/main/nailart17.jpg"
+    },
+    {
+      "id": "18",
+      "imageURL": "https://raw.githubusercontent.com/JiangAogo/nailart/main/nailart18.jpg"
+    },
+    {
+      "id": "19",
+      "imageURL": "https://raw.githubusercontent.com/JiangAogo/nailart/main/nailart19.jpg"
+    },
+    {
+      "id": "20",
+      "imageURL": "https://raw.githubusercontent.com/JiangAogo/nailart/main/nailart20.jpg"
+    },
+    {
+      "id": "21",
+      "imageURL": "https://raw.githubusercontent.com/JiangAogo/nailart/main/nailart21.jpg"
+    },
+    {
+      "id": "22",
+      "imageURL": "https://raw.githubusercontent.com/JiangAogo/nailart/main/nailart22.jpg"
+    },
+    {
+      "id": "23",
+      "imageURL": "https://raw.githubusercontent.com/JiangAogo/nailart/main/nailart23.jpg"
+    },
+    {
+      "id": "24",
+      "imageURL": "https://raw.githubusercontent.com/JiangAogo/nailart/main/nailart24.jpg"
+    },
+    {
+      "id": "25",
+      "imageURL": "https://raw.githubusercontent.com/JiangAogo/nailart/main/nailart25.jpg"
+    },
+    {
+      "id": "26",
+      "imageURL": "https://raw.githubusercontent.com/JiangAogo/nailart/main/nailart26.jpg"
+    },
+    {
+      "id": "27",
+      "imageURL": "https://raw.githubusercontent.com/JiangAogo/nailart/main/nailart27.jpg"
+    },
+    {
+      "id": "28",
+      "imageURL": "https://raw.githubusercontent.com/JiangAogo/nailart/main/nailart28.jpg"
+    },
+    {
+      "id": "29",
+      "imageURL": "https://raw.githubusercontent.com/JiangAogo/nailart/main/nailart29.jpg"
+    },
+    {
+      "id": "30",
+      "imageURL": "https://raw.githubusercontent.com/JiangAogo/nailart/main/nailart30.jpg"
+    },
+    {
+      "id": "31",
+      "imageURL": "https://raw.githubusercontent.com/JiangAogo/nailart/main/nailart31.jpg"
+    },
+    {
+      "id": "32",
+      "imageURL": "https://raw.githubusercontent.com/JiangAogo/nailart/main/nailart32.jpg"
+    },
+    {
+      "id": "33",
+      "imageURL": "https://raw.githubusercontent.com/JiangAogo/nailart/main/nailart33.jpg"
+    },
+    {
+      "id": "34",
+      "imageURL": "https://raw.githubusercontent.com/JiangAogo/nailart/main/nailart34.jpg"
+    },
+    {
+      "id": "35",
+      "imageURL": "https://raw.githubusercontent.com/JiangAogo/nailart/main/nailart35.jpg"
+    },
+    {
+      "id": "36",
+      "imageURL": "https://raw.githubusercontent.com/JiangAogo/nailart/main/nailart36.jpg"
+    },
+    {
+      "id": "37",
+      "imageURL": "https://raw.githubusercontent.com/JiangAogo/nailart/main/nailart37.jpg"
+    },
+    {
+      "id": "38",
+      "imageURL": "https://raw.githubusercontent.com/JiangAogo/nailart/main/nailart38.jpg"
+    },
+    {
+      "id": "39",
+      "imageURL": "https://raw.githubusercontent.com/JiangAogo/nailart/main/nailart39.jpg"
+    },
+    {
+      "id": "40",
+      "imageURL": "https://raw.githubusercontent.com/JiangAogo/nailart/main/nailart40.jpg"
+    },
+    {
+      "id": "41",
+      "imageURL": "https://raw.githubusercontent.com/JiangAogo/nailart/main/nailart41.jpg"
+    },
+    {
+      "id": "42",
+      "imageURL": "https://raw.githubusercontent.com/JiangAogo/nailart/main/nailart42.jpg"
+    },
+    {
+      "id": "43",
+      "imageURL": "https://raw.githubusercontent.com/JiangAogo/nailart/main/nailart43.jpg"
+    },
+    {
+      "id": "44",
+      "imageURL": "https://raw.githubusercontent.com/JiangAogo/nailart/main/nailart44.jpg"
+    }
+  ]
+}
+
