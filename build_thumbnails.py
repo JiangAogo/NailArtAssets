@@ -26,7 +26,7 @@ MAIN_DIR = SCRIPT_DIR / "main"
 THUMBS_DIR = SCRIPT_DIR / "thumbs"
 THUMB_SIZE = (350, 350)
 JSON_PATH = SCRIPT_DIR / "explore_data.json"
-BASE_URL = "https://raw.githubusercontent.com/JiangAogo/NailArtAssets"
+BASE_URL = "https://raw.githubusercontent.com/JiangAogo/NailArtAssets/main"
 
 
 def ensure_dirs():
@@ -115,52 +115,30 @@ def build_thumbnails():
 
 def update_json(entries: list):
     """
-    根据本次处理的图片同步更新 explore_data.json：
-    - 每张图（除 nailart0）对应 items 中一条，没有则创建
-    - heroImage 对应 nailart0
-    - 所有地址统一为 .jpg
+    更新 explore_data.json：imageURL、thumbnailURL 统一为 .jpg 地址。
+    - heroImage.imageURL: main/nailart0.jpg
+    - items[].imageURL: main/nailart{id}.jpg
+    - items[].thumbnailURL: thumbs/nailart{id}.jpg
     """
-    if not entries:
-        return
+    by_num = {e[0]: (e[1], e[2]) for e in entries}
 
-    # 读取已有 JSON，若不存在或无效则用默认结构
-    if JSON_PATH.exists():
-        try:
-            with open(JSON_PATH, "r", encoding="utf-8") as f:
-                data = json.load(f)
-        except (json.JSONDecodeError, IOError):
-            data = {"heroImage": {"imageURL": ""}, "items": []}
-    else:
-        data = {"heroImage": {"imageURL": ""}, "items": []}
+    with open(JSON_PATH, "r", encoding="utf-8") as f:
+        data = json.load(f)
 
-    if "heroImage" not in data:
-        data["heroImage"] = {"imageURL": ""}
-    if "items" not in data:
-        data["items"] = []
+    if 0 in by_num:
+        data["heroImage"]["imageURL"] = f"{BASE_URL}/main/nailart0.jpg"
 
-    # 已有 items 按 id 建索引，便于合并
-    existing_by_id = {str(item["id"]): item for item in data["items"]}
-
-    # 以本次处理结果为准：为每张图生成/更新条目
-    new_items = []
-    for num, main_name, thumb_name in sorted(entries, key=lambda x: x[0]):
-        if num == 0:
-            data["heroImage"]["imageURL"] = f"{BASE_URL}/main/nailart0.jpg"
+    for item in data["items"]:
+        n = int(item["id"])
+        if n not in by_num:
             continue
-        n = num
-        item = existing_by_id.get(str(n))
-        if item is None:
-            item = {"id": str(n), "imageURL": "", "thumbnailURL": ""}
         item["imageURL"] = f"{BASE_URL}/main/nailart{n}.jpg"
         item["thumbnailURL"] = f"{BASE_URL}/thumbs/nailart{n}.jpg"
-        new_items.append(item)
-
-    data["items"] = new_items
 
     with open(JSON_PATH, "w", encoding="utf-8") as f:
         json.dump(data, f, ensure_ascii=False, indent=2)
 
-    print(f"已同步 {JSON_PATH}：heroImage + {len(new_items)} 条 items（与图片一致）")
+    print(f"已更新 {JSON_PATH} 中的 imageURL 与 thumbnailURL（统一 .jpg）")
 
 
 def main():
