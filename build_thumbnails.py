@@ -1,10 +1,10 @@
 #!/usr/bin/env python3
 """
 缩略图脚本：
-1. 创建 main/（存放大图）和 thumbs/（存放 350x350 缩略图）
-2. 将项目根目录下的 nailart*.jpg / nailart*.png 复制到 main/
-3. 为 main/ 中每张图生成 350x350 缩略图到 thumbs/，文件名与序号一致
-4. 自动更新 explore_data.json 中每个 item 的 imageURL、thumbnailURL
+1. 创建 main/（存放大图）和 thumbs/（存放 350x350 缩略图），图片格式统一为 JPG
+2. 将项目根目录下的 nailart*.jpg / nailart*.png 转为 JPG 写入 main/
+3. 为 main/ 中每张图生成 350x350 的 JPG 缩略图到 thumbs/
+4. 自动更新 explore_data.json 中的 imageURL、thumbnailURL（统一为 .jpg 地址）
 
 使用前请安装依赖: pip install Pillow
 运行: python3 build_thumbnails.py
@@ -12,7 +12,6 @@
 import json
 import os
 import re
-import shutil
 from pathlib import Path
 
 try:
@@ -36,44 +35,63 @@ def ensure_dirs():
     print(f"已确保目录: {MAIN_DIR.name}/, {THUMBS_DIR.name}/")
 
 
+def save_as_jpg(im: Image.Image, dest_path: Path, quality: int = 85):
+    """将 PIL 图片以 JPG 格式保存。"""
+    if im.mode != "RGB":
+        im = im.convert("RGB")
+    im.save(dest_path, format="JPEG", quality=quality, optimize=True)
+
+
 def collect_and_copy_sources():
-    """从项目根目录收集 nailart*.jpg / nailart*.png，复制到 main/。"""
+    """从项目根目录收集 nailart*.jpg / nailart*.png，统一转为 JPG 写入 main/。"""
     pattern = re.compile(r"^nailart(\d+)\.(jpg|jpeg|png)$", re.I)
-    copied = 0
+    converted = 0
     for f in SCRIPT_DIR.iterdir():
         if not f.is_file():
             continue
         m = pattern.match(f.name)
         if not m:
             continue
-        dest = MAIN_DIR / f.name
+        num = m.group(1)
+        dest = MAIN_DIR / f"nailart{num}.jpg"
         if dest.resolve() == f.resolve():
             continue
-        shutil.copy2(f, dest)
-        copied += 1
-        print(f"  复制大图: {f.name} -> main/")
-    if copied:
-        print(f"共复制 {copied} 张大图到 main/")
+        with Image.open(f) as im:
+            save_as_jpg(im, dest)
+        converted += 1
+        print(f"  大图转 JPG: {f.name} -> main/nailart{num}.jpg")
+    # 将 main/ 中已有的 PNG 也转为 JPG 并删除原 PNG
+    for f in list(MAIN_DIR.iterdir()):
+        if not f.is_file() or f.suffix.lower() != ".png":
+            continue
+        m = pattern.match(f.name)
+        if not m:
+            continue
+        num = m.group(1)
+        dest = MAIN_DIR / f"nailart{num}.jpg"
+        with Image.open(f) as im:
+            save_as_jpg(im, dest)
+        f.unlink()
+        converted += 1
+        print(f"  main 内转 JPG: {f.name} -> main/nailart{num}.jpg")
+    if converted:
+        print(f"共处理 {converted} 张大图到 main/（统一 JPG）")
     else:
-        print("未在根目录发现新的 nailart 图片（可能已在 main/）")
+        print("未发现需要处理的 nailart 图片（可能已在 main/ 且为 JPG）")
 
 
 def make_thumbnail(src_path: Path, dest_path: Path, size: tuple):
-    """将图片缩放为 size 并保存到 dest_path。"""
+    """将图片缩放为 size 并保存为 JPG 到 dest_path。"""
     with Image.open(src_path) as im:
-        im = im.convert("RGB") if im.mode in ("RGBA", "P") else im
         im.thumbnail(size, Image.Resampling.LANCZOS)
-        # 若目标为 jpg，统一用 RGB 保存
-        if dest_path.suffix.lower() in (".jpg", ".jpeg"):
-            if im.mode != "RGB":
-                im = im.convert("RGB")
-        im.save(dest_path, quality=85, optimize=True)
+        save_as_jpg(im, dest_path)
 
 
 def build_thumbnails():
-    """为 main/ 中每张图生成 350x350 缩略图到 thumbs/，序号与文件名一致。"""
-    pattern = re.compile(r"^nailart(\d+)\.(jpg|jpeg|png)$", re.I)
+    """为 main/ 中每张图生成 350x350 的 JPG 缩略图到 thumbs/，序号与 id 一致。"""
+    pattern = re.compile(r"^nailart(\d+)\.(jpg|jpeg)$", re.I)
     entries = []
+
     def sort_key(p):
         m = re.search(r"\d+", p.name)
         return (int(m.group(0)), p.name) if m else (0, p.name)
@@ -85,49 +103,64 @@ def build_thumbnails():
         if not m:
             continue
         num = int(m.group(1))
-        ext = m.group(2).lower()
-        if ext == "jpeg":
-            ext = "jpg"
-        thumb_name = f"nailart{m.group(1)}.{ext}"
+        thumb_name = f"nailart{num}.jpg"
         dest = THUMBS_DIR / thumb_name
         make_thumbnail(f, dest, THUMB_SIZE)
-        entries.append((num, f.name, thumb_name))
+        entries.append((num, f"nailart{num}.jpg", thumb_name))
         print(f"  缩略图: main/{f.name} -> thumbs/{thumb_name}")
     entries.sort(key=lambda x: x[0])
-    print(f"共生成 {len(entries)} 张缩略图")
+    print(f"共生成 {len(entries)} 张缩略图（统一 JPG）")
     return entries
 
 
 def update_json(entries: list):
     """
-    根据 main/ 与 thumbs/ 中的实际文件名，更新 explore_data.json：
-    - heroImage.imageURL: main 里 nailart0 的 URL
-    - items[].imageURL: main 里对应 id 的 URL
-    - items[].thumbnailURL: thumbs 里对应 id 的 URL
-    序号与 id 一致。
+    根据本次处理的图片同步更新 explore_data.json：
+    - 每张图（除 nailart0）对应 items 中一条，没有则创建
+    - heroImage 对应 nailart0
+    - 所有地址统一为 .jpg
     """
-    by_num = {e[0]: (e[1], e[2]) for e in entries}
+    if not entries:
+        return
 
-    with open(JSON_PATH, "r", encoding="utf-8") as f:
-        data = json.load(f)
+    # 读取已有 JSON，若不存在或无效则用默认结构
+    if JSON_PATH.exists():
+        try:
+            with open(JSON_PATH, "r", encoding="utf-8") as f:
+                data = json.load(f)
+        except (json.JSONDecodeError, IOError):
+            data = {"heroImage": {"imageURL": ""}, "items": []}
+    else:
+        data = {"heroImage": {"imageURL": ""}, "items": []}
 
-    # heroImage: 对应 nailart0
-    if 0 in by_num:
-        main_name, thumb_name = by_num[0]
-        data["heroImage"]["imageURL"] = f"{BASE_URL}/main/{main_name}"
+    if "heroImage" not in data:
+        data["heroImage"] = {"imageURL": ""}
+    if "items" not in data:
+        data["items"] = []
 
-    for item in data["items"]:
-        n = int(item["id"])
-        if n not in by_num:
+    # 已有 items 按 id 建索引，便于合并
+    existing_by_id = {str(item["id"]): item for item in data["items"]}
+
+    # 以本次处理结果为准：为每张图生成/更新条目
+    new_items = []
+    for num, main_name, thumb_name in sorted(entries, key=lambda x: x[0]):
+        if num == 0:
+            data["heroImage"]["imageURL"] = f"{BASE_URL}/main/nailart0.jpg"
             continue
-        main_name, thumb_name = by_num[n]
-        item["imageURL"] = f"{BASE_URL}/main/{main_name}"
-        item["thumbnailURL"] = f"{BASE_URL}/thumbs/{thumb_name}"
+        n = num
+        item = existing_by_id.get(str(n))
+        if item is None:
+            item = {"id": str(n), "imageURL": "", "thumbnailURL": ""}
+        item["imageURL"] = f"{BASE_URL}/main/nailart{n}.jpg"
+        item["thumbnailURL"] = f"{BASE_URL}/thumbs/nailart{n}.jpg"
+        new_items.append(item)
+
+    data["items"] = new_items
 
     with open(JSON_PATH, "w", encoding="utf-8") as f:
         json.dump(data, f, ensure_ascii=False, indent=2)
 
-    print(f"已更新 {JSON_PATH} 中的 imageURL 与 thumbnailURL")
+    print(f"已同步 {JSON_PATH}：heroImage + {len(new_items)} 条 items（与图片一致）")
 
 
 def main():
