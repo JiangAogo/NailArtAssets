@@ -119,6 +119,7 @@ def update_json(entries: list):
     - heroImage.imageURL: main/nailart0.jpg
     - items[].imageURL: main/nailart{id}.jpg
     - items[].thumbnailURL: thumbs/nailart{id}.jpg
+    - 若 main/ 中新增了图片，会为对应 id 在 items 中追加新条目。
     """
     by_num = {e[0]: (e[1], e[2]) for e in entries}
 
@@ -127,6 +128,20 @@ def update_json(entries: list):
 
     if 0 in by_num:
         data["heroImage"]["imageURL"] = f"{BASE_URL}/main/nailart0.jpg"
+
+    existing_ids = {int(item["id"]) for item in data["items"]}
+    # 为 main/ 中新增的图片在 items 里追加条目
+    for n in sorted(by_num.keys()):
+        if n not in existing_ids:
+            data["items"].append({
+                "id": str(n),
+                "imageURL": f"{BASE_URL}/main/nailart{n}.jpg",
+                "thumbnailURL": f"{BASE_URL}/thumbs/nailart{n}.jpg",
+            })
+            existing_ids.add(n)
+
+    # 按 id 排序，保证顺序一致
+    data["items"].sort(key=lambda item: int(item["id"]))
 
     for item in data["items"]:
         n = int(item["id"])
